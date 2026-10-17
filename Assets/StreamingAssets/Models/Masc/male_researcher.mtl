@@ -1,0 +1,112 @@
+newmtl M00_000_00_FaceBrow_00_FACE
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/M00_000_00_FaceBrow_00.png
+
+newmtl M00_000_00_FaceMouth_00_FACE
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/M00_000_00_FaceMouth_00.png
+
+newmtl M00_000_00_EyeIris_00_EYE
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/M00_000_00_EyeIris_00.png
+
+newmtl M00_000_00_EyeHighlight_00_EYE
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/M00_000_00_EyeHighlight_00.png
+
+newmtl M00_000_00_EyeWhite_00_EYE
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/M00_000_00_EyeWhite_00.png
+
+newmtl M00_000_00_Face_00_SKIN
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/M00_000_00_Face_00.png
+
+newmtl M00_000_00_FaceEyelash_00_FACE
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/M00_000_00_FaceEyelash_00.png
+
+newmtl M00_000_00_FaceEyeline_00_FACE
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/M00_000_00_FaceEyeline_00.png
+
+newmtl M00_000_00_EyeExtra_01_EYE
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/M00_000_00_EyeExtra_01.png
+
+newmtl M00_000_00_Body_00_SKIN
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/M00_000_00_Body_00.png
+
+newmtl M00_008_03_Tops_01_CLOTH
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/M00_008_03_Tops_01.png
+
+newmtl M00_008_01_Bottoms_01_CLOTH
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/M00_008_01_Bottoms_01.png
+
+newmtl M00_007_01_Shoes_01_CLOTH
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/M00_007_01_Shoes_01.png
+
+newmtl F00_000_Hair_00_HAIR
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/F00_000_Hair_00.png
+

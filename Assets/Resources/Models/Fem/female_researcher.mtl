@@ -1,0 +1,136 @@
+newmtl F00_000_00_FaceMouth_00_FACE
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/F00_000_00_FaceMouth_00.png
+
+newmtl F00_000_00_EyeWhite_00_EYE
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/F00_000_00_EyeWhite_00.png
+
+newmtl F00_000_00_FaceEyeline_00_FACE
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/F00_000_00_FaceEyeline_00.png
+
+newmtl F00_000_00_FaceEyelash_00_FACE
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/F00_000_00_FaceEyelash_00.png
+
+newmtl F00_000_00_FaceBrow_00_FACE
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/F00_000_00_FaceBrow_00.png
+
+newmtl F00_000_00_EyeIris_00_EYE
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/F00_000_00_EyeIris_00.png
+
+newmtl F00_000_00_EyeHighlight_00_EYE
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/F00_000_00_EyeHighlight_00.png
+
+newmtl F00_000_00_Face_00_SKIN
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/F00_000_00_Face_00.png
+
+newmtl F00_000_00_EyeExtra_01_EYE
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/F00_000_00_EyeExtra_01.png
+
+newmtl F00_000_00_Body_00_SKIN
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/F00_000_00_Body_00.png
+
+newmtl F00_006_01_Tops_01_CLOTH
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/F00_006_01_Tops_01.png
+
+newmtl F00_008_01_Bottoms_01_CLOTH
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/F00_008_01_Bottoms_01.png
+
+newmtl F00_001_01_Shoes_01_CLOTH
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/F00_001_01_Shoes_01.png
+
+newmtl F00_000_Hair_00_HAIR_01
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/F00_000_Hair_00_01.png
+
+newmtl F00_000_Hair_00_HAIR_02
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/F00_000_Hair_00_02.png
+
+newmtl F00_000_Hair_00_HAIR_03
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/F00_000_Hair_00_03.png
+
+newmtl F00_000_Hair_00_HAIR_04
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.1 0.1 0.1
+d 1.0
+illum 2
+map_Kd textures/F00_000_Hair_00_04.png
+
