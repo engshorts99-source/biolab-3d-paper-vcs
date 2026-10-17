@@ -67,7 +67,7 @@ namespace BioLab.PaperVCS
     /// Supports commits, branching, checkout, merging, line-by-line & numeric Diff,
     /// automatic Methods generation from live lab protocols, and Markdown export.
     /// </summary>
-    public class PaperVersionControlManager : MonoBehaviour
+    public class PaperVersionControlManager
     {
         public static PaperVersionControlManager Instance { get; private set; }
 
@@ -89,12 +89,14 @@ namespace BioLab.PaperVCS
 
         private string SaveFilePath => Path.Combine(Application.persistentDataPath, "biolab_papergit_v1.json");
 
-        private void Awake()
+        public static PaperVersionControlManager Initialize()
         {
-            if (Instance == null) Instance = this;
-            else { Destroy(gameObject); return; }
-
-            LoadOrInitializeRepository();
+            if (Instance == null)
+            {
+                Instance = new PaperVersionControlManager();
+                Instance.LoadOrInitializeRepository();
+            }
+            return Instance;
         }
 
         public void LoadOrInitializeRepository()

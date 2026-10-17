@@ -26,7 +26,7 @@ namespace BioLab.UI
         public GameObject tabletCanvasRoot;
         public KeyCode toggleKey = KeyCode.Tab;
         public bool isOpen = false;
-        public int activeTab = 0; // 0: PaperGit VCS, 1: Diff Viewer, 2: Protocol Studio, 3: Reagent Warehouse
+        [NonSerialized] public int activeTab = 0; // 0: PaperGit VCS, 1: Diff Viewer, 2: Protocol Studio, 3: Reagent Warehouse
 
         // Legacy fields preserved for compatibility
         public Text protocolTitleText;
@@ -215,7 +215,7 @@ namespace BioLab.UI
                     ShowToast("Teleported to Zone 1: Smart Reagent Warehouse & -80°C Cryo Vault");
                     break;
                 case "ZONE2": // Zone 2: Wet-Lab Protocol Execution Bay (North/Center)
-                    player.transform.position = new Vector3(0f, 0.15f, 4.5f);
+                    player.transform.position = new Vector3(0f, 0.15f, 1.8f);
                     player.transform.rotation = Quaternion.Euler(0, 0f, 0);
                     ShowToast("Teleported to Zone 2: Wet-Lab Protocol Execution Bay (BSC / Centrifuge / qPCR)");
                     break;
@@ -424,17 +424,17 @@ namespace BioLab.UI
             GUILayout.BeginArea(new Rect(14, 7, w - 28, 34));
             GUILayout.BeginHorizontal();
 
-            GUILayout.Label($"<b>🔬 BIOLAB 3D OS</b>  |  {DetectCurrentPlayerZone()}  |  🌿 PaperGit: {branchTag}", _bodyStyle, GUILayout.Width(w * 0.48f));
+            GUILayout.Label($"<b>[BIOLAB 3D OS]</b>  |  {DetectCurrentPlayerZone()}  |  <b>PaperGit:</b> {branchTag}", _bodyStyle, GUILayout.Width(w * 0.48f));
 
             GUILayout.FlexibleSpace();
 
-            if (GUILayout.Button("📦 [F2] Zone1 시약창고", _btnEmeraldStyle, GUILayout.Height(28)))
+            if (GUILayout.Button("[F2] Zone1 시약창고", _btnEmeraldStyle, GUILayout.Height(28)))
                 TeleportPlayerToZone("ZONE1");
-            if (GUILayout.Button("🧪 [F3] Zone2 실험벤치", _btnCyanStyle, GUILayout.Height(28)))
+            if (GUILayout.Button("[F3] Zone2 실험벤치", _btnCyanStyle, GUILayout.Height(28)))
                 TeleportPlayerToZone("ZONE2");
-            if (GUILayout.Button("📄 [F4] Zone3 논문오피스", _btnVioletStyle, GUILayout.Height(28)))
+            if (GUILayout.Button("[F4] Zone3 논문오피스", _btnVioletStyle, GUILayout.Height(28)))
                 TeleportPlayerToZone("ZONE3");
-            if (GUILayout.Button(isOpen ? "✖ [Tab] 3D 뷰로 복귀" : "🖥 [Tab] 논문Git·프로토콜·창고 통합OS", _btnSlateStyle, GUILayout.Height(28)))
+            if (GUILayout.Button(isOpen ? "[X] [Tab] 3D 뷰로 복귀" : "[Tab] 논문Git·프로토콜·창고 통합OS", _btnSlateStyle, GUILayout.Height(28)))
                 ToggleTablet();
 
             GUILayout.EndHorizontal();
@@ -453,17 +453,17 @@ namespace BioLab.UI
             GUI.Box(r, "", _windowBoxStyle);
 
             GUILayout.BeginArea(new Rect(r.x + 12, r.y + 10, r.width - 24, r.height - 20));
-            GUILayout.Label($"<b>📋 ACTIVE SOP: {pm.protocolId} ({pm.protocolVersion})</b>", _subHeaderStyle);
+            GUILayout.Label($"<b>[ACTIVE SOP] {pm.protocolId} ({pm.protocolVersion})</b>", _subHeaderStyle);
 
             var step = pm.GetCurrentStep();
             if (step != null)
             {
                 GUILayout.Label($"<b>Step {step.stepNumber}/{pm.steps.Count}: {step.title}</b>", _bodyStyle);
                 GUILayout.Label($"<color=#A8C0D8>{step.description}</color>", _bodyStyle);
-                GUILayout.Label($"🎯 3D Station: <color=#00E5FF><b>{step.targetEquipmentId}</b></color> | Reagent: <color=#22EE88>{step.linkedReagentId} ({step.reagentVolumeUsed}{step.reagentUnit})</color>", _bodyStyle);
+                GUILayout.Label($"Station: <color=#00E5FF><b>{step.targetEquipmentId}</b></color> | Reagent: <color=#22EE88>{step.linkedReagentId} ({step.reagentVolumeUsed}{step.reagentUnit})</color>", _bodyStyle);
 
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("📍 3D 장비로 이동", _btnSlateStyle, GUILayout.Height(24)))
+                if (GUILayout.Button(">> 3D 장비로 이동", _btnSlateStyle, GUILayout.Height(24)))
                 {
                     TeleportPlayerToStation(step.targetEquipmentId);
                 }
@@ -478,7 +478,7 @@ namespace BioLab.UI
             {
                 GUILayout.Label("<color=#22EE88><b>✓ ALL PROTOCOL STEPS COMPLETED!</b></color>", _bodyStyle);
                 GUILayout.Label("Ready to auto-sync Methods & Reagent Lots into PaperGit.", _bodyStyle);
-                if (GUILayout.Button("📄 PaperGit 논문 커밋 창 열기", _btnVioletStyle, GUILayout.Height(26)))
+                if (GUILayout.Button(">> PaperGit 논문 커밋 창 열기", _btnVioletStyle, GUILayout.Height(26)))
                 {
                     if (PaperVersionControlManager.Instance != null)
                         PaperVersionControlManager.Instance.SyncMethodsFromLiveLab();
@@ -495,7 +495,7 @@ namespace BioLab.UI
                 Rect toastRect = new Rect(Screen.width * 0.5f - 290f, Screen.height - 96f, 580f, 36f);
                 GUI.Box(toastRect, "", _cardBoxStyle);
                 GUI.Label(new Rect(toastRect.x + 14, toastRect.y + 8, toastRect.width - 28, 22),
-                    $"<color=#22EE88><b>⚡ {_statusToast}</b></color>", _bodyStyle);
+                    $"<color=#22EE88><b>[LabOS] {_statusToast}</b></color>", _bodyStyle);
             }
 
             if (isOpen) return;
@@ -510,7 +510,7 @@ namespace BioLab.UI
             }
             else
             {
-                Rect helpRect = new Rect(16f, Screen.height - 38f, 520f, 28f);
+                Rect helpRect = new Rect(16f, Screen.height - 38f, 540f, 28f);
                 GUI.Box(helpRect, "", _cardBoxStyle);
                 GUI.Label(new Rect(helpRect.x + 10, helpRect.y + 5, helpRect.width - 20, 20),
                     "조작: <b>WASD</b> 이동 | <b>Shift</b> 달리기 | <b>마우스</b> 회전/줌 | <b>[E]</b> 장비 작동 | <b>[Tab]</b> 논문Git·프로토콜·창고 OS", _bodyStyle);
@@ -531,13 +531,13 @@ namespace BioLab.UI
 
             // Modal Navigation Tabs
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("📄 1. PaperGit 논문 버전 관리 & 에디터", activeTab == 0 ? _btnVioletStyle : _btnSlateStyle, GUILayout.Height(34)))
+            if (GUILayout.Button("1. PaperGit 논문 버전 관리 & 에디터", activeTab == 0 ? _btnVioletStyle : _btnSlateStyle, GUILayout.Height(34)))
                 activeTab = 0;
-            if (GUILayout.Button("🔍 2. 버전 간 Diff 비교 (텍스트·수치·시약Lot)", activeTab == 1 ? _btnCyanStyle : _btnSlateStyle, GUILayout.Height(34)))
+            if (GUILayout.Button("2. 버전 간 Diff 비교 (텍스트·수치·시약Lot)", activeTab == 1 ? _btnCyanStyle : _btnSlateStyle, GUILayout.Height(34)))
                 activeTab = 1;
-            if (GUILayout.Button("🧪 3. 프로토콜 수립 & 3D 실험 런너", activeTab == 2 ? _btnEmeraldStyle : _btnSlateStyle, GUILayout.Height(34)))
+            if (GUILayout.Button("3. 프로토콜 수립 & 3D 실험 런너", activeTab == 2 ? _btnEmeraldStyle : _btnSlateStyle, GUILayout.Height(34)))
                 activeTab = 2;
-            if (GUILayout.Button("📦 4. Zone 1 시약 창고 & Lot 재고 DB", activeTab == 3 ? _btnEmeraldStyle : _btnSlateStyle, GUILayout.Height(34)))
+            if (GUILayout.Button("4. Zone 1 시약 창고 & Lot 재고 DB", activeTab == 3 ? _btnEmeraldStyle : _btnSlateStyle, GUILayout.Height(34)))
                 activeTab = 3;
             GUILayout.EndHorizontal();
 
@@ -577,7 +577,7 @@ namespace BioLab.UI
 
             // --- LEFT PANE: Branches & Commit Revision Timeline ---
             GUILayout.BeginVertical(_cardBoxStyle, GUILayout.Width(leftW), GUILayout.Height(areaH));
-            GUILayout.Label("<b>🌿 GIT BRANCHES & REVISION TIMELINE</b>", _subHeaderStyle);
+            GUILayout.Label("<b>[GIT BRANCHES & REVISION TIMELINE]</b>", _subHeaderStyle);
 
             // Branch Selector Row
             GUILayout.BeginHorizontal();
@@ -585,7 +585,7 @@ namespace BioLab.UI
             foreach (var br in vcs.branches)
             {
                 bool isCurr = (br == vcs.currentBranch);
-                if (GUILayout.Button(isCurr ? $"● {br}" : br, isCurr ? _btnVioletStyle : _btnSlateStyle, GUILayout.Height(24)))
+                if (GUILayout.Button(isCurr ? $"* {br}" : br, isCurr ? _btnVioletStyle : _btnSlateStyle, GUILayout.Height(24)))
                 {
                     vcs.CheckoutBranch(br);
                     ShowToast($"Switched branch to '{br}'");
@@ -604,7 +604,7 @@ namespace BioLab.UI
             GUILayout.EndHorizontal();
 
             GUILayout.Space(6);
-            GUILayout.Label($"<b>📜 COMMIT HISTORY ({vcs.commits.Count} Snapshots)</b>", _subHeaderStyle);
+            GUILayout.Label($"<b>[COMMIT HISTORY] ({vcs.commits.Count} Immutable Snapshots)</b>", _subHeaderStyle);
 
             _commitListScroll = GUILayout.BeginScrollView(_commitListScroll);
             for (int i = vcs.commits.Count - 1; i >= 0; i--)
@@ -621,7 +621,7 @@ namespace BioLab.UI
                 GUILayout.EndHorizontal();
 
                 GUILayout.Label($"<b>{c.commitMessage}</b>", _bodyStyle);
-                GUILayout.Label($"<color=#90B4D4>🧪 {c.linkedProtocolId} ({c.linkedProtocolVersion}) | 📊 {c.quantitativeMetrics}</color>", _bodyStyle);
+                GUILayout.Label($"<color=#90B4D4>SOP: {c.linkedProtocolId} ({c.linkedProtocolVersion}) | Metrics: {c.quantitativeMetrics}</color>", _bodyStyle);
 
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Checkout (불러오기)", _btnSlateStyle, GUILayout.Height(22)))
@@ -634,7 +634,7 @@ namespace BioLab.UI
                     _diffBaseIndex = i;
                     ShowToast($"Set {c.commitHash} as Diff Base");
                 }
-                if (GUILayout.Button("Diff 비교 보기 →", _btnCyanStyle, GUILayout.Height(22)))
+                if (GUILayout.Button("Diff 비교 보기 ->", _btnCyanStyle, GUILayout.Height(22)))
                 {
                     _diffTargetIndex = i;
                     activeTab = 1;
@@ -651,14 +651,14 @@ namespace BioLab.UI
             // --- RIGHT PANE: Manuscript Working Tree Editor & Auto-Sync ---
             GUILayout.BeginVertical(_cardBoxStyle, GUILayout.Width(rightW), GUILayout.Height(areaH));
             GUILayout.BeginHorizontal();
-            GUILayout.Label($"<b>📝 MANUSCRIPT WORKING TREE ({vcs.currentBranch})</b>", _subHeaderStyle);
+            GUILayout.Label($"<b>[MANUSCRIPT WORKING TREE] ({vcs.currentBranch})</b>", _subHeaderStyle);
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("⚡ 프로토콜 & 시약 창고 Lot → Methods 자동 반영", _btnEmeraldStyle, GUILayout.Height(28)))
+            if (GUILayout.Button(">> 프로토콜 & 시약 창고 Lot -> Methods 자동 반영", _btnEmeraldStyle, GUILayout.Height(28)))
             {
                 vcs.SyncMethodsFromLiveLab();
                 ShowToast("Synthesized Materials & Methods from active 3D Protocol & Zone 1 Reagent Lots!");
             }
-            if (GUILayout.Button("📤 Markdown 논문 내보내기", _btnCyanStyle, GUILayout.Height(28)))
+            if (GUILayout.Button("[Export] Markdown 논문 내보내기", _btnCyanStyle, GUILayout.Height(28)))
             {
                 string path = vcs.ExportCurrentManuscriptToMarkdown();
                 ShowToast($"Exported Manuscript Markdown to: {path}");
@@ -699,7 +699,7 @@ namespace BioLab.UI
             _newVersionTag = GUILayout.TextField(_newVersionTag, _textFieldStyle, GUILayout.Width(95));
             GUILayout.Label("Commit Msg:", _bodyStyle, GUILayout.Width(82));
             _newCommitMsg = GUILayout.TextField(_newCommitMsg, _textFieldStyle, GUILayout.ExpandWidth(true));
-            if (GUILayout.Button("💾 새 버전 커밋 (git commit)", _btnVioletStyle, GUILayout.Width(190), GUILayout.Height(28)))
+            if (GUILayout.Button("[+] 새 버전 커밋 (git commit)", _btnVioletStyle, GUILayout.Width(190), GUILayout.Height(28)))
             {
                 var created = vcs.CommitWorkingTree(_newCommitMsg, _newVersionTag);
                 _diffBaseIndex = Mathf.Max(0, vcs.commits.Count - 2);
@@ -727,7 +727,7 @@ namespace BioLab.UI
 
             // Selector Header
             GUILayout.BeginHorizontal();
-            GUILayout.Label("<b>🔴 BASE COMMIT (이전 버전):</b>", _bodyStyle, GUILayout.Width(175));
+            GUILayout.Label("<b>[-] BASE COMMIT (이전 버전):</b>", _bodyStyle, GUILayout.Width(175));
             for (int i = 0; i < vcs.commits.Count; i++)
             {
                 var c = vcs.commits[i];
@@ -737,7 +737,7 @@ namespace BioLab.UI
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("<b>🟢 TARGET COMMIT (비교 버전):</b>", _bodyStyle, GUILayout.Width(175));
+            GUILayout.Label("<b>[+] TARGET COMMIT (비교 버전):</b>", _bodyStyle, GUILayout.Width(175));
             for (int i = 0; i < vcs.commits.Count; i++)
             {
                 var c = vcs.commits[i];
@@ -783,7 +783,7 @@ namespace BioLab.UI
             // Left: Active Protocol Steps & 3D Execution Controls
             GUILayout.BeginVertical(_cardBoxStyle, GUILayout.Width(leftW), GUILayout.Height(areaH));
             GUILayout.BeginHorizontal();
-            GUILayout.Label("<b>🧪 SOP PROTOCOL LIBRARY:</b>", _subHeaderStyle);
+            GUILayout.Label("<b>[SOP PROTOCOL LIBRARY]</b>", _subHeaderStyle);
             for (int i = 0; i < pm.protocolLibrary.Count; i++)
             {
                 var p = pm.protocolLibrary[i];
@@ -793,7 +793,7 @@ namespace BioLab.UI
                     pm.SelectProtocol(i);
                 }
             }
-            if (GUILayout.Button("↺ 스텝 초기화", _btnSlateStyle, GUILayout.Height(26)))
+            if (GUILayout.Button("[Reset] 스텝 초기화", _btnSlateStyle, GUILayout.Height(26)))
             {
                 pm.ResetCurrentProtocolSteps();
                 ShowToast("Reset protocol steps for fresh 3D execution run.");
@@ -813,11 +813,11 @@ namespace BioLab.UI
                 GUILayout.BeginHorizontal();
                 string badge = s.isCompleted
                     ? $"<color=#22EE88><b>[✓ DONE {s.completedTimestamp}]</b></color>"
-                    : (isCurr ? "<color=#00E5FF><b>[▶ ACTIVE STEP]</b></color>" : "<color=#88A0B8>[PENDING]</color>");
+                    : (isCurr ? "<color=#00E5FF><b>[>> ACTIVE STEP]</b></color>" : "<color=#88A0B8>[PENDING]</color>");
 
                 GUILayout.Label($"{badge}  <b>Step {s.stepNumber}: {s.title}</b>", _bodyStyle);
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button($"📍 3D 이동 ({s.targetEquipmentId})", _btnSlateStyle, GUILayout.Height(22)))
+                if (GUILayout.Button($">> 3D 이동 ({s.targetEquipmentId})", _btnSlateStyle, GUILayout.Height(22)))
                 {
                     TeleportPlayerToStation(s.targetEquipmentId);
                 }
@@ -831,7 +831,7 @@ namespace BioLab.UI
 
                 GUILayout.Label(s.description, _bodyStyle);
                 string lotStamp = !string.IsNullOrEmpty(s.recordedLotNumber) ? $" | <color=#22EE88>Recorded Lot#: {s.recordedLotNumber}</color>" : "";
-                GUILayout.Label($"<color=#90B4D4>⚙ Params: {s.parameterSummary}  |  📦 Reagent: {s.linkedReagentId} ({s.reagentVolumeUsed} {s.reagentUnit}){lotStamp}</color>", _bodyStyle);
+                GUILayout.Label($"<color=#90B4D4>Params: {s.parameterSummary}  |  Reagent: {s.linkedReagentId} ({s.reagentVolumeUsed} {s.reagentUnit}){lotStamp}</color>", _bodyStyle);
                 GUILayout.EndVertical();
                 GUILayout.Space(4);
             }
@@ -842,7 +842,7 @@ namespace BioLab.UI
 
             // Right: Protocol Authoring (Add New Step / Create New SOP Protocol)
             GUILayout.BeginVertical(_cardBoxStyle, GUILayout.Width(rightW), GUILayout.Height(areaH));
-            GUILayout.Label("<b>➕ ADD STEP TO CURRENT PROTOCOL (프로토콜 스텝 추가)</b>", _subHeaderStyle);
+            GUILayout.Label("<b>[+] ADD STEP TO CURRENT PROTOCOL (프로토콜 스텝 추가)</b>", _subHeaderStyle);
 
             GUILayout.Label("Step Title (단계명):", _bodyStyle);
             _newStepTitle = GUILayout.TextField(_newStepTitle, _textFieldStyle);
@@ -850,12 +850,12 @@ namespace BioLab.UI
             GUILayout.Label("Step Description (상세 실험 절차):", _bodyStyle);
             _newStepDesc = GUILayout.TextArea(_newStepDesc, _textAreaStyle, GUILayout.Height(48));
 
+            GUILayout.Label("3D Target Station (장비 ID 선택):", _bodyStyle);
             GUILayout.BeginHorizontal();
-            GUILayout.Label("3D Target Station:", _bodyStyle, GUILayout.Width(120));
             string[] stations = { "WAREHOUSE-01", "BSC-01", "EQ-CENT-01", "EQ-PCR-01", "FREEZER-ULT-01", "PAPER-DESK-01" };
             foreach (var st in stations)
             {
-                if (GUILayout.Button(st.Split('-')[0], _newStepStation == st ? _btnCyanStyle : _btnSlateStyle, GUILayout.Height(22)))
+                if (GUILayout.Button(st, _newStepStation == st ? _btnCyanStyle : _btnSlateStyle, GUILayout.Height(22)))
                     _newStepStation = st;
             }
             GUILayout.EndHorizontal();
@@ -878,13 +878,13 @@ namespace BioLab.UI
             }
 
             GUILayout.Space(16);
-            GUILayout.Label("<b>🆕 CREATE NEW SOP PROTOCOL (신규 프로토콜 수립)</b>", _subHeaderStyle);
+            GUILayout.Label("<b>[NEW] CREATE NEW SOP PROTOCOL (신규 프로토콜 수립)</b>", _subHeaderStyle);
             GUILayout.Label("New Protocol Title:", _bodyStyle);
             _newProtoTitle = GUILayout.TextField(_newProtoTitle, _textFieldStyle);
             GUILayout.Label("Sample Batch ID:", _bodyStyle);
             _newProtoBatch = GUILayout.TextField(_newProtoBatch, _textFieldStyle);
 
-            if (GUILayout.Button("✨ 신규 프로토콜 생성 및 활성화", _btnVioletStyle, GUILayout.Height(30)))
+            if (GUILayout.Button("[+] 신규 프로토콜 생성 및 활성화", _btnVioletStyle, GUILayout.Height(30)))
             {
                 var created = pm.CreateNewProtocol(_newProtoTitle, "v1.0", _newProtoBatch, "Dr. J. Park");
                 ShowToast($"Created new SOP Protocol: {created.protocolId} - {created.title}");
@@ -910,7 +910,7 @@ namespace BioLab.UI
             // Left: Warehouse Reagent Cards
             GUILayout.BeginVertical(_cardBoxStyle, GUILayout.Width(leftW), GUILayout.Height(areaH));
             GUILayout.BeginHorizontal();
-            GUILayout.Label($"<b>📦 ZONE 1 REAGENT WAREHOUSE ({wm.reagents.Count} Lots Tracked)</b>", _subHeaderStyle);
+            GUILayout.Label($"<b>[ZONE 1 REAGENT WAREHOUSE] ({wm.reagents.Count} Lots Tracked)</b>", _subHeaderStyle);
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("All Zones", _warehouseFilter == "ALL" ? _btnEmeraldStyle : _btnSlateStyle, GUILayout.Height(24)))
                 _warehouseFilter = "ALL";
@@ -935,10 +935,10 @@ namespace BioLab.UI
                 GUILayout.Label($"<color={stockColor}><b>Stock: {rg.currentVolume:F1} / {rg.maxVolume:F0} {rg.unit} ({pct:F0}%)</b></color>", _bodyStyle);
                 GUILayout.EndHorizontal();
 
-                GUILayout.Label($"<color=#90B4D4>Vendor: {rg.vendor} (Cat# {rg.catalogNumber})  |  📍 {rg.storageLocation} ({rg.storageTemp})  |  Exp: {rg.expiryDate}</color>", _bodyStyle);
+                GUILayout.Label($"<color=#90B4D4>Vendor: {rg.vendor} (Cat# {rg.catalogNumber})  |  Location: {rg.storageLocation} ({rg.storageTemp})  |  Exp: {rg.expiryDate}</color>", _bodyStyle);
 
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("📍 3D 창고/냉동고 위치로 이동", _btnSlateStyle, GUILayout.Height(22)))
+                if (GUILayout.Button(">> 3D 창고/냉동고 위치로 이동", _btnSlateStyle, GUILayout.Height(22)))
                 {
                     TeleportPlayerToStation(rg.storageStationId);
                 }
@@ -963,7 +963,7 @@ namespace BioLab.UI
 
             // Right: New Reagent Registration & Consumption Audit Log
             GUILayout.BeginVertical(_cardBoxStyle, GUILayout.Width(rightW), GUILayout.Height(areaH));
-            GUILayout.Label("<b>➕ REGISTER NEW REAGENT LOT (신규 시약 입고 등록)</b>", _subHeaderStyle);
+            GUILayout.Label("<b>[+] REGISTER NEW REAGENT LOT (신규 시약 입고 등록)</b>", _subHeaderStyle);
 
             GUILayout.Label("Reagent Name (시약명):", _bodyStyle);
             _newRgName = GUILayout.TextField(_newRgName, _textFieldStyle);
@@ -1001,7 +1001,7 @@ namespace BioLab.UI
             _newRgUnit = GUILayout.TextField(_newRgUnit, _textFieldStyle, GUILayout.Width(60));
             GUILayout.EndHorizontal();
 
-            if (GUILayout.Button("📦 Zone 1 시약 창고에 신규 Lot 입고 등록", _btnEmeraldStyle, GUILayout.Height(28)))
+            if (GUILayout.Button("[+] Zone 1 시약 창고에 신규 Lot 입고 등록", _btnEmeraldStyle, GUILayout.Height(28)))
             {
                 float.TryParse(_newRgVol, out float mv);
                 var item = wm.RegisterNewReagent(_newRgName, "Enzymes & qPCR", _newRgVendor, _newRgCat, _newRgLot,
@@ -1011,7 +1011,7 @@ namespace BioLab.UI
             }
 
             GUILayout.Space(12);
-            GUILayout.Label("<b>🧾 LIVE REAGENT CONSUMPTION AUDIT LOG (시약 출고/사용 이력)</b>", _subHeaderStyle);
+            GUILayout.Label("<b>[LIVE REAGENT CONSUMPTION AUDIT LOG] (시약 출고/사용 이력)</b>", _subHeaderStyle);
             int maxLogs = Mathf.Min(6, wm.usageLogs.Count);
             for (int i = 0; i < maxLogs; i++)
             {

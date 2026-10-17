@@ -330,10 +330,11 @@ namespace BioLab.Core
 
         private void SetupTabletUI()
         {
+            ReagentWarehouseManager.Initialize();
+            PaperVersionControlManager.Initialize();
+
             GameObject uiRoot = new GameObject("UI_LabOS_And_PaperGit_Managers");
-            uiRoot.AddComponent<ReagentWarehouseManager>();
             uiRoot.AddComponent<Protocols.ProtocolManager>();
-            uiRoot.AddComponent<PaperVersionControlManager>();
             uiRoot.AddComponent<DiegeticTabletUI>();
         }
 
@@ -346,6 +347,7 @@ namespace BioLab.Core
         {
             string[] args = System.Environment.GetCommandLineArgs();
             string screenshotPath = null;
+            string showcaseDir = null;
             string spawnZone = null;
             bool testLocomotion = false;
             float delay = 1.8f;
@@ -365,6 +367,10 @@ namespace BioLab.Core
                 {
                     screenshotPath = args[i + 1];
                 }
+                else if (args[i].Equals("-captureAllShowcase", System.StringComparison.OrdinalIgnoreCase) && i + 1 < args.Length)
+                {
+                    showcaseDir = args[i + 1];
+                }
                 else if (args[i].Equals("-delay", System.StringComparison.OrdinalIgnoreCase) && i + 1 < args.Length)
                 {
                     float.TryParse(args[i + 1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out delay);
@@ -373,6 +379,85 @@ namespace BioLab.Core
                 {
                     quitAfter = true;
                 }
+            }
+
+            if (!string.IsNullOrEmpty(showcaseDir))
+            {
+                System.IO.Directory.CreateDirectory(showcaseDir);
+                yield return new WaitForSeconds(1.0f);
+
+                // 1. Zone 1: Reagent Warehouse & -80C Cryo Vault
+                if (DiegeticTabletUI.Instance != null)
+                {
+                    DiegeticTabletUI.Instance.isOpen = false;
+                    DiegeticTabletUI.Instance.TeleportPlayerToZone("ZONE1");
+                }
+                if (_thirdPersonCamera != null) _thirdPersonCamera.SetOrbitPose(255f, 14f, 3.6f);
+                yield return new WaitForSeconds(0.45f);
+                ScreenCapture.CaptureScreenshot(System.IO.Path.Combine(showcaseDir, "render_zone1_warehouse.png"));
+                yield return new WaitForSeconds(0.35f);
+
+                // 2. Zone 2: Wet-Lab Protocol Execution Bay
+                if (DiegeticTabletUI.Instance != null)
+                {
+                    DiegeticTabletUI.Instance.isOpen = false;
+                    DiegeticTabletUI.Instance.TeleportPlayerToZone("ZONE2");
+                }
+                if (_thirdPersonCamera != null) _thirdPersonCamera.SetOrbitPose(0f, 16f, 4.4f);
+                yield return new WaitForSeconds(0.45f);
+                ScreenCapture.CaptureScreenshot(System.IO.Path.Combine(showcaseDir, "render_zone2_wetlab.png"));
+                yield return new WaitForSeconds(0.35f);
+
+                // 3. Zone 3: Dry-Lab PaperGit Command Office
+                if (DiegeticTabletUI.Instance != null)
+                {
+                    DiegeticTabletUI.Instance.isOpen = false;
+                    DiegeticTabletUI.Instance.TeleportPlayerToZone("ZONE3");
+                }
+                if (_thirdPersonCamera != null) _thirdPersonCamera.SetOrbitPose(100f, 14f, 3.6f);
+                yield return new WaitForSeconds(0.45f);
+                ScreenCapture.CaptureScreenshot(System.IO.Path.Combine(showcaseDir, "render_zone3_papergit_office.png"));
+                yield return new WaitForSeconds(0.35f);
+
+                // 4. UI Tab 1: PaperGit VCS & Working Tree Editor
+                if (DiegeticTabletUI.Instance != null) DiegeticTabletUI.Instance.OpenTabletToTab(0);
+                yield return new WaitForSeconds(0.40f);
+                ScreenCapture.CaptureScreenshot(System.IO.Path.Combine(showcaseDir, "ui_tab1_papergit.png"));
+                yield return new WaitForSeconds(0.35f);
+
+                // 5. UI Tab 2: Red/Green Git Diff & Provenance Comparison
+                if (DiegeticTabletUI.Instance != null) DiegeticTabletUI.Instance.OpenTabletToTab(1);
+                yield return new WaitForSeconds(0.40f);
+                ScreenCapture.CaptureScreenshot(System.IO.Path.Combine(showcaseDir, "ui_tab2_diff_viewer.png"));
+                yield return new WaitForSeconds(0.35f);
+
+                // 6. UI Tab 3: Protocol Authoring Studio & 3D Runner (with 2 steps completed & Lots stamped)
+                if (Protocols.ProtocolManager.Instance != null)
+                {
+                    Protocols.ProtocolManager.Instance.CompleteCurrentStep();
+                    Protocols.ProtocolManager.Instance.CompleteCurrentStep();
+                }
+                if (DiegeticTabletUI.Instance != null)
+                {
+                    DiegeticTabletUI.Instance.TeleportPlayerToZone("ZONE2");
+                    DiegeticTabletUI.Instance.OpenTabletToTab(2);
+                }
+                yield return new WaitForSeconds(0.40f);
+                ScreenCapture.CaptureScreenshot(System.IO.Path.Combine(showcaseDir, "ui_tab3_protocol_studio.png"));
+                yield return new WaitForSeconds(0.35f);
+
+                // 7. UI Tab 4: Smart Reagent Warehouse & Cold-Chain Lot Inventory
+                if (DiegeticTabletUI.Instance != null)
+                {
+                    DiegeticTabletUI.Instance.TeleportPlayerToZone("ZONE1");
+                    DiegeticTabletUI.Instance.OpenTabletToTab(3);
+                }
+                yield return new WaitForSeconds(0.40f);
+                ScreenCapture.CaptureScreenshot(System.IO.Path.Combine(showcaseDir, "ui_tab4_reagent_warehouse.png"));
+                yield return new WaitForSeconds(0.45f);
+
+                Application.Quit();
+                yield break;
             }
 
             if (!string.IsNullOrEmpty(spawnZone) && DiegeticTabletUI.Instance != null)

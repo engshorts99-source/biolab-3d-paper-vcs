@@ -4,6 +4,22 @@
 
 ---
 
+## 📸 3D 연구실 렌더링 & PaperGit 통합 OS 프리뷰
+
+### 1) 3D 연구실 3개 구역 (Zone 1 시약 창고 · Zone 2 실험 벤치 · Zone 3 논문 오피스)
+| Zone 1: 스마트 시약 창고 & -80°C 초저온 보관실 | Zone 2: Wet-Lab 실험 벤치 (BSC · 원심분리기 · qPCR 로봇) | Zone 3: Dry-Lab 논문 & PaperGit 오피스 (3D Git 트리) |
+| :---: | :---: | :---: |
+| ![Zone 1 Warehouse](docs/screenshots/render_zone1_warehouse.png) | ![Zone 2 Wet-Lab](docs/screenshots/render_zone2_wetlab.png) | ![Zone 3 PaperGit Office](docs/screenshots/render_zone3_papergit_office.png) |
+
+### 2) BioLab 3D 통합 OS (4개 워크스테이션 탭)
+| Tab 1: PaperGit 논문 버전 관리 & 워킹 트리 에디터 | Tab 2: 버전 간 Red/Green Git Diff (본문 · 실험수치 · 시약Lot) |
+| :---: | :---: |
+| ![Tab 1 PaperGit](docs/screenshots/ui_tab1_papergit.png) | ![Tab 2 Diff Viewer](docs/screenshots/ui_tab2_diff_viewer.png) |
+| **Tab 3: 프로토콜 수립 스튜디오 & 3D 실험 런너 (Lot 자동 기록)** | **Tab 4: Zone 1 스마트 시약 창고 & 실시간 출고 감사 로그** |
+| ![Tab 3 Protocol Studio](docs/screenshots/ui_tab3_protocol_studio.png) | ![Tab 4 Reagent Warehouse](docs/screenshots/ui_tab4_reagent_warehouse.png) |
+
+---
+
 ## 🌟 핵심 아키텍처 (Core Features)
 
 ### 1. 🏛️ 3구역 통합 3D 연구실 렌더링 환경 (24m × 22m Cleanroom Complex)

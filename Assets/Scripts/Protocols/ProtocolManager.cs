@@ -13,12 +13,12 @@ namespace BioLab.Protocols
         public string title;
         public string description;
         public string targetEquipmentId;   // e.g. WAREHOUSE-01, BSC-01, EQ-CENT-01, EQ-PCR-01, FREEZER-ULT-01, PAPER-DESK-01
-        public string linkedReagentId;     // e.g. RG-DMEM-01
-        public float reagentVolumeUsed;    // e.g. 15.0
-        public string reagentUnit;         // e.g. mL or uL
-        public string parameterSummary;    // e.g. "14,000 RPM, 4°C, 3 min"
-        public string recordedLotNumber;   // Auto-stamped upon completion from Warehouse
-        public string completedTimestamp;
+        [NonSerialized] public string linkedReagentId;     // e.g. RG-DMEM-01
+        [NonSerialized] public float reagentVolumeUsed;    // e.g. 15.0
+        [NonSerialized] public string reagentUnit;         // e.g. mL or uL
+        [NonSerialized] public string parameterSummary;    // e.g. "14,000 RPM, 4°C, 3 min"
+        [NonSerialized] public string recordedLotNumber;   // Auto-stamped upon completion from Warehouse
+        [NonSerialized] public string completedTimestamp;
         public bool isCompleted;
         public float requiredTimeSeconds;
     }
@@ -44,13 +44,14 @@ namespace BioLab.Protocols
         public static ProtocolManager Instance { get; private set; }
 
         [Header("Active Protocol Summary")]
-        public string protocolId = "PRT-2026-001";
-        public string protocolVersion = "v2.1";
+        [NonSerialized] public string protocolId = "PRT-2026-001";
+        [NonSerialized] public string protocolVersion = "v2.1";
         public string protocolTitle = "NLRP6 & NOD2 Inflammasome Kinetic & qPCR Assay SOP";
         public string sampleBatchId = "BATCH-2026-NLRP6-09";
         public int currentStepIndex = 0;
 
-        public List<ProtocolDefinition> protocolLibrary = new List<ProtocolDefinition>();
+        [NonSerialized] public List<ProtocolDefinition> protocolLibrary = new List<ProtocolDefinition>();
+        [SerializeField]
         public List<ProtocolStep> steps = new List<ProtocolStep>();
 
         public event Action<ProtocolStep> OnStepCompleted;

@@ -50,7 +50,7 @@ namespace BioLab.Warehouse
     /// Lot numbers, real-time volume consumption during protocol execution,
     /// and provenance snapshots for the Paper Version Control System.
     /// </summary>
-    public class ReagentWarehouseManager : MonoBehaviour
+    public class ReagentWarehouseManager
     {
         public static ReagentWarehouseManager Instance { get; private set; }
 
@@ -61,12 +61,14 @@ namespace BioLab.Warehouse
 
         private string SaveFilePath => Path.Combine(Application.persistentDataPath, "biolab_warehouse_v1.json");
 
-        private void Awake()
+        public static ReagentWarehouseManager Initialize()
         {
-            if (Instance == null) Instance = this;
-            else { Destroy(gameObject); return; }
-
-            LoadOrInitializeWarehouse();
+            if (Instance == null)
+            {
+                Instance = new ReagentWarehouseManager();
+                Instance.LoadOrInitializeWarehouse();
+            }
+            return Instance;
         }
 
         public void LoadOrInitializeWarehouse()

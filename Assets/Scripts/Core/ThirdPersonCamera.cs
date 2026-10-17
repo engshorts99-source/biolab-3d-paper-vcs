@@ -65,6 +65,17 @@ namespace BioLab.Core
             Cursor.visible = false;
         }
 
+        public void SetOrbitPose(float yaw, float pitch, float distance)
+        {
+            _yaw = yaw;
+            _pitch = pitch;
+            defaultDistance = distance;
+            _currentDistance = distance;
+            _targetDistance = distance;
+            _currentRotation = new Vector3(_pitch, _yaw, 0f);
+            _rotationVelocity = Vector3.zero;
+        }
+
         private void Update()
         {
             bool uiModalOpen = (BioLab.UI.DiegeticTabletUI.Instance != null && BioLab.UI.DiegeticTabletUI.Instance.isOpen);

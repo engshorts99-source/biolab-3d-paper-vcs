@@ -42,8 +42,8 @@ namespace BioLab.Equipment
         public string equipmentName = "Refrigerated Centrifuge 5424 R";
         public EquipmentType equipmentType = EquipmentType.RefrigeratedCentrifuge;
         public string equipmentId = "EQ-CENT-01";
-        public string zoneName = "Zone 2: Wet-Lab Protocol Bay";
-        public string quickHint = "Press [E] to Operate Station";
+        [NonSerialized] public string zoneName = "Zone 2: Wet-Lab Protocol Bay";
+        [NonSerialized] public string quickHint = "Press [E] to Operate Station";
 
         [Header("Physical State")]
         public EquipmentState currentState = EquipmentState.Idle;
@@ -60,7 +60,7 @@ namespace BioLab.Equipment
         [Header("Visual Elements")]
         public Transform movingPart;     // Lid, Door, Sash, or Gantry Arm
         public Transform rotorTransform; // Centrifuge Rotor or Stirrer
-        public Transform beaconTransform;// Floating 3D indicator ring above station
+        [NonSerialized] public Transform beaconTransform;// Floating 3D indicator ring above station
         public Renderer outlineRenderer;
         public Material outlineMaterial;
 
