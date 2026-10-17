@@ -455,5 +455,217 @@ namespace BioLab.Core
             tex.Apply();
             return tex;
         }
+
+        /// <summary>
+        /// Generates a dual-pane ultrawide monitor texture for the Dry-Lab Manuscript Command Desk:
+        /// Left side shows Git commit graph (branches & nodes), Center/Right shows Red/Green line-by-line manuscript diff.
+        /// </summary>
+        public static Texture2D CreatePaperGitMonitorTexture()
+        {
+            int width = 512;
+            int height = 256;
+            Texture2D tex = new Texture2D(width, height, TextureFormat.RGBA32, true);
+
+            Color bg = new Color(0.04f, 0.06f, 0.11f, 1f);
+            Color sidebarBg = new Color(0.06f, 0.09f, 0.16f, 1f);
+            Color borderCyan = new Color(0.0f, 0.85f, 1.0f, 1f);
+            Color branchMain = new Color(0.0f, 0.90f, 1.0f, 1f);
+            Color branchRev = new Color(0.75f, 0.35f, 1.0f, 1f);
+            Color diffAddBg = new Color(0.06f, 0.32f, 0.18f, 1f);
+            Color diffAddBar = new Color(0.15f, 0.95f, 0.48f, 1f);
+            Color diffDelBg = new Color(0.36f, 0.08f, 0.12f, 1f);
+            Color diffDelBar = new Color(0.98f, 0.25f, 0.32f, 1f);
+            Color textLine = new Color(0.70f, 0.78f, 0.88f, 1f);
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    Color col = (x < 140) ? sidebarBg : bg;
+
+                    // Outer bezel & pane divider
+                    if (x < 3 || x > width - 4 || y < 3 || y > height - 4 || x == 140)
+                    {
+                        col = borderCyan * 0.7f;
+                    }
+
+                    // Top title bar
+                    if (y > height - 26 && y < height - 4 && x > 4 && x < width - 4)
+                    {
+                        col = new Color(0.09f, 0.15f, 0.26f, 1f);
+                        if (y == height - 26) col = borderCyan;
+                    }
+
+                    // Left Sidebar: Git Commit DAG Graph (x: 28 for main, x: 56 for revision branch)
+                    if (x >= 10 && x < 135 && y > 16 && y < height - 32)
+                    {
+                        // Main branch vertical line
+                        if (Mathf.Abs(x - 32) <= 1 && y >= 28 && y <= 210)
+                            col = branchMain;
+
+                        // Feature/Revision branch curve & vertical line
+                        if (Mathf.Abs(x - 64) <= 1 && y >= 68 && y <= 172)
+                            col = branchRev;
+                        if (y >= 48 && y < 68 && Mathf.Abs((x - 32) - (y - 48) * 1.6f) < 2.0f)
+                            col = branchRev;
+                        if (y > 172 && y <= 192 && Mathf.Abs((x - 64) + (y - 172) * 1.6f) < 2.0f)
+                            col = branchRev;
+
+                        // Commit nodes (circles)
+                        int[] mainNodesY = { 36, 92, 148, 200 };
+                        foreach (int ny in mainNodesY)
+                        {
+                            float d = Mathf.Sqrt((x - 32) * (x - 32) + (y - ny) * (y - ny));
+                            if (d < 6.5f) col = (d < 3.5f) ? Color.white : branchMain;
+                            // Commit label bar
+                            if (y >= ny - 3 && y <= ny + 3 && x > 44 && x < 122 && x < 60)
+                                col = textLine * 0.75f;
+                        }
+
+                        int[] revNodesY = { 80, 124, 164 };
+                        foreach (int ny in revNodesY)
+                        {
+                            float d = Mathf.Sqrt((x - 64) * (x - 64) + (y - ny) * (y - ny));
+                            if (d < 6.5f) col = (d < 3.5f) ? Color.white : branchRev;
+                            if (y >= ny - 3 && y <= ny + 3 && x > 76 && x < 128)
+                                col = branchRev * 0.85f;
+                        }
+                    }
+
+                    // Right Pane: Side-by-Side / Inline Manuscript Diff Lines (x: 152 to 498)
+                    if (x >= 152 && x <= 498 && y >= 18 && y <= height - 36)
+                    {
+                        int row = (height - 36 - y) / 14;
+                        int rowY = (height - 36 - y) % 14;
+
+                        if (rowY >= 2 && rowY <= 11)
+                        {
+                            // Highlight specific rows as Diff Removed (-) or Diff Added (+)
+                            if (row == 3 || row == 4 || row == 9)
+                            {
+                                col = diffDelBg;
+                                if (x < 160) col = diffDelBar;
+                                else if (rowY >= 5 && rowY <= 8 && x > 168 && x < 410 && (x % 32 != 0))
+                                    col = new Color(1.0f, 0.65f, 0.68f, 1f);
+                            }
+                            else if (row == 5 || row == 6 || row == 10 || row == 11)
+                            {
+                                col = diffAddBg;
+                                if (x < 160) col = diffAddBar;
+                                else if (rowY >= 5 && rowY <= 8 && x > 168 && x < 465 && (x % 28 != 0))
+                                    col = new Color(0.65f, 1.0f, 0.78f, 1f);
+                            }
+                            else if (rowY >= 5 && rowY <= 8 && x > 168 && x < (320 + (row * 37) % 140))
+                            {
+                                col = textLine * 0.55f;
+                            }
+                        }
+                    }
+
+                    tex.SetPixel(x, y, col);
+                }
+            }
+
+            tex.Apply();
+            return tex;
+        }
+
+        /// <summary>
+        /// Generates an inventory matrix display for the Zone 1 Reagent Warehouse Kiosk.
+        /// </summary>
+        public static Texture2D CreateReagentKioskTexture()
+        {
+            int width = 256;
+            int height = 256;
+            Texture2D tex = new Texture2D(width, height, TextureFormat.RGBA32, true);
+
+            Color bg = new Color(0.03f, 0.07f, 0.09f, 1f);
+            Color emerald = new Color(0.10f, 0.92f, 0.60f, 1f);
+            Color amber = new Color(0.98f, 0.75f, 0.15f, 1f);
+            Color cyan = new Color(0.0f, 0.85f, 0.98f, 1f);
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    Color col = bg;
+
+                    if (x < 4 || x > width - 5 || y < 4 || y > height - 5)
+                        col = emerald;
+
+                    // Storage Grid Matrix (6x6 Reagent Slots)
+                    if (x >= 20 && x < 236 && y >= 48 && y < 228)
+                    {
+                        int gx = (x - 20) / 36;
+                        int gy = (y - 48) / 30;
+                        int lx = (x - 20) % 36;
+                        int ly = (y - 48) % 30;
+
+                        if (lx >= 3 && lx <= 32 && ly >= 3 && ly <= 25)
+                        {
+                            int idx = gy * 6 + gx;
+                            if (idx % 7 == 0) col = amber * 0.85f;      // Low stock alert
+                            else if (idx % 3 == 0) col = cyan * 0.75f;  // -80C Cryo lot
+                            else col = emerald * 0.70f;                 // Optimal stock
+                        }
+                    }
+
+                    // Bottom barcode scanner laser line
+                    if (y >= 16 && y <= 32 && x >= 24 && x <= 232)
+                    {
+                        col = (x % 6 < 3) ? Color.white : bg;
+                    }
+
+                    tex.SetPixel(x, y, col);
+                }
+            }
+
+            tex.Apply();
+            return tex;
+        }
+
+        /// <summary>
+        /// Generates a qPCR Real-Time Amplification Curve screen texture for Zone 2 Wet-Lab.
+        /// </summary>
+        public static Texture2D CreatePcrAmplificationTexture()
+        {
+            int width = 256;
+            int height = 128;
+            Texture2D tex = new Texture2D(width, height, TextureFormat.RGBA32, true);
+
+            Color bg = new Color(0.03f, 0.05f, 0.10f, 1f);
+            Color grid = new Color(0.10f, 0.16f, 0.26f, 1f);
+            Color curve1 = new Color(0.15f, 0.95f, 0.50f, 1f);
+            Color curve2 = new Color(0.0f, 0.85f, 1.0f, 1f);
+            Color curve3 = new Color(0.98f, 0.55f, 0.20f, 1f);
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    Color col = bg;
+                    if (x % 32 == 0 || y % 24 == 0) col = grid;
+
+                    // Sigmoidal qPCR amplification curves
+                    float cycle = (x / (float)width) * 40f;
+                    float y1 = 14f + 96f / (1f + Mathf.Exp(-(cycle - 18f) * 0.45f));
+                    float y2 = 14f + 92f / (1f + Mathf.Exp(-(cycle - 22f) * 0.45f));
+                    float y3 = 14f + 86f / (1f + Mathf.Exp(-(cycle - 27f) * 0.42f));
+
+                    if (Mathf.Abs(y - y1) < 2.2f) col = curve1;
+                    else if (Mathf.Abs(y - y2) < 2.2f) col = curve2;
+                    else if (Mathf.Abs(y - y3) < 2.2f) col = curve3;
+
+                    // Ct threshold line
+                    if (y == 36 && (x / 6) % 2 == 0) col = new Color(0.95f, 0.25f, 0.35f, 1f);
+
+                    tex.SetPixel(x, y, col);
+                }
+            }
+
+            tex.Apply();
+            return tex;
+        }
     }
 }
+

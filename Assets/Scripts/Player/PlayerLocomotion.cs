@@ -101,24 +101,27 @@ namespace BioLab.Player
             float inputH = 0f;
             float inputV = 0f;
 
+            bool uiModalOpen = (BioLab.UI.DiegeticTabletUI.Instance != null && BioLab.UI.DiegeticTabletUI.Instance.isOpen);
+
             if (autoRunTest)
             {
                 inputV += 1f;
             }
-
-            try
+            else if (!uiModalOpen)
             {
-                inputH = Input.GetAxisRaw("Horizontal");
-                inputV = Input.GetAxisRaw("Vertical");
-            }
-            catch { }
+                try
+                {
+                    inputH = Input.GetAxisRaw("Horizontal");
+                    inputV = Input.GetAxisRaw("Vertical");
+                }
+                catch { }
 
-            // Explicit Keycode Fallbacks
-            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) inputV += 1f;
-            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) inputV -= 1f;
-            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) inputH += 1f;
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) inputH -= 1f;
-            if (autoRunTest) inputV += 1f;
+                // Explicit Keycode Fallbacks
+                if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) inputV += 1f;
+                if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) inputV -= 1f;
+                if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) inputH += 1f;
+                if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) inputH -= 1f;
+            }
 
             inputH = Mathf.Clamp(inputH, -1f, 1f);
             inputV = Mathf.Clamp(inputV, -1f, 1f);

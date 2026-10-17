@@ -67,8 +67,21 @@ namespace BioLab.Core
 
         private void Update()
         {
+            bool uiModalOpen = (BioLab.UI.DiegeticTabletUI.Instance != null && BioLab.UI.DiegeticTabletUI.Instance.isOpen);
+
+            if (uiModalOpen)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                return;
+            }
+
+            // Do not lock cursor if clicking top command bar or top-right protocol HUD
+            float guiMouseY = Screen.height - Input.mousePosition.y;
+            bool clickingHud = (guiMouseY <= 52f) || (Input.mousePosition.x >= Screen.width - 380f && guiMouseY <= 215f);
+
             // Cursor Lock & Unlock controls
-            if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
+            if (!clickingHud && Input.GetMouseButtonDown(1))
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
@@ -80,7 +93,7 @@ namespace BioLab.Core
                 Cursor.visible = true;
             }
 
-            // Zoom via Mouse ScrollWheel (works unconditionally)
+            // Zoom via Mouse ScrollWheel
             float scroll = 0f;
             try { scroll = Input.GetAxis("Mouse ScrollWheel"); } catch { }
             if (Mathf.Abs(scroll) > 0.001f)
@@ -93,8 +106,10 @@ namespace BioLab.Core
         {
             if (target == null) return;
 
-            // Rotate camera if locked OR dragging mouse button
-            bool canRotate = (Cursor.lockState == CursorLockMode.Locked) || Input.GetMouseButton(0) || Input.GetMouseButton(1);
+            bool uiModalOpen = (BioLab.UI.DiegeticTabletUI.Instance != null && BioLab.UI.DiegeticTabletUI.Instance.isOpen);
+
+            // Rotate camera if locked OR dragging right mouse button (when UI modal is closed)
+            bool canRotate = !uiModalOpen && ((Cursor.lockState == CursorLockMode.Locked) || Input.GetMouseButton(1));
             if (canRotate)
             {
                 float mx = 0f;

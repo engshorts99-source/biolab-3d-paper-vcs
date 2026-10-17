@@ -3,13 +3,15 @@ using BioLab.Player;
 using BioLab.Equipment;
 using BioLab.Environment;
 using BioLab.UI;
+using BioLab.Warehouse;
+using BioLab.PaperVCS;
 
 namespace BioLab.Core
 {
     /// <summary>
     /// Master game entrypoint. Orchestrates procedural high-resolution textures,
-    /// high-contrast cleanroom architecture, sculpted anime researcher characters,
-    /// realistic physics locomotion, and diegetic tablet protocols.
+    /// 3-Zone integrated cleanroom architecture (Reagent Warehouse, Wet-Lab Bench, Dry-Lab PaperGit Office),
+    /// sculpted anime researcher characters, realistic physics locomotion, and LabOS PaperGit VCS.
     /// </summary>
     public class GameManager : MonoBehaviour
     {
@@ -24,6 +26,10 @@ namespace BioLab.Core
         private Texture2D _faceFemaleTex;
         private Texture2D _centrifugeDisplayTex;
         private Texture2D _freezerDisplayTex;
+        private Texture2D _paperGitMonitorTex;
+        private Texture2D _reagentKioskTex;
+        private Texture2D _pcrDisplayTex;
+        private Texture2D _holoDiagTex;
 
         // Character Materials
         private Material _labCoatMaterial;
@@ -75,6 +81,10 @@ namespace BioLab.Core
             _faceFemaleTex = LabTextureGenerator.CreateAnimeFaceTexture(true);
             _centrifugeDisplayTex = LabTextureGenerator.CreateCentrifugeDisplayTexture();
             _freezerDisplayTex = LabTextureGenerator.CreateFreezerDisplayTexture();
+            _paperGitMonitorTex = LabTextureGenerator.CreatePaperGitMonitorTexture();
+            _reagentKioskTex = LabTextureGenerator.CreateReagentKioskTexture();
+            _pcrDisplayTex = LabTextureGenerator.CreatePcrAmplificationTexture();
+            _holoDiagTex = LabTextureGenerator.CreateHoloDiagnosticTexture();
         }
 
         private void InitializeMaterials()
@@ -196,18 +206,44 @@ namespace BioLab.Core
             builder.accentBlueMaterial = _equipmentAccentMat;
             builder.cyanGlowMaterial = _cyanGlowMaterial;
 
-            // Spawn High-Fidelity Equipment
-            var centrifuge = LabModelGenerator.CreateCentrifuge5424R(_equipmentBodyMat, _equipmentAccentMat, _glassMaterial, _metalMaterial, _centrifugeDisplayTex);
-            centrifuge.transform.position = new Vector3(-5.2f, 0.92f, 2.0f);
-            centrifuge.transform.rotation = Quaternion.Euler(0, 90f, 0);
+            // =======================================================================
+            // ZONE 1 (WEST WING): SMART REAGENT WAREHOUSE & -80°C CRYO VAULT
+            // =======================================================================
+            var warehouseStation = LabModelGenerator.CreateReagentWarehouseStation(
+                _equipmentBodyMat, _metalMaterial, _glassMaterial, _equipmentAccentMat, _cyanGlowMaterial, _reagentKioskTex);
+            warehouseStation.transform.position = new Vector3(-8.8f, 0f, 2.2f);
+            warehouseStation.transform.rotation = Quaternion.Euler(0, 90f, 0);
 
-            var bsc = LabModelGenerator.CreateBiosafetyCabinet(_equipmentBodyMat, _glassMaterial, _metalMaterial, _equipmentAccentMat);
-            bsc.transform.position = new Vector3(0f, 0f, 8.5f);
+            var freezer = LabModelGenerator.CreateUltraLowFreezer(
+                _equipmentBodyMat, _equipmentAccentMat, _metalMaterial, _freezerDisplayTex);
+            freezer.transform.position = new Vector3(-8.8f, 0f, -3.6f);
+            freezer.transform.rotation = Quaternion.Euler(0, 90f, 0);
+
+            // =======================================================================
+            // ZONE 2 (CENTER & NORTH BAY): WET-LAB PROTOCOL EXECUTION BAY
+            // =======================================================================
+            var bsc = LabModelGenerator.CreateBiosafetyCabinet(
+                _equipmentBodyMat, _glassMaterial, _metalMaterial, _equipmentAccentMat);
+            bsc.transform.position = new Vector3(0f, 0f, 9.2f);
             bsc.transform.rotation = Quaternion.Euler(0, 180f, 0);
 
-            var freezer = LabModelGenerator.CreateUltraLowFreezer(_equipmentBodyMat, _equipmentAccentMat, _metalMaterial, _freezerDisplayTex);
-            freezer.transform.position = new Vector3(6.2f, 0f, -3.5f);
-            freezer.transform.rotation = Quaternion.Euler(0, -90f, 0);
+            var centrifuge = LabModelGenerator.CreateCentrifuge5424R(
+                _equipmentBodyMat, _equipmentAccentMat, _glassMaterial, _metalMaterial, _centrifugeDisplayTex);
+            centrifuge.transform.position = new Vector3(-3.6f, 0.92f, 3.2f);
+            centrifuge.transform.rotation = Quaternion.Euler(0, 90f, 0);
+
+            var pcrAndRobot = LabModelGenerator.CreatePcrAndLiquidHandlerStation(
+                _equipmentBodyMat, _equipmentAccentMat, _glassMaterial, _metalMaterial, _cyanGlowMaterial, _pcrDisplayTex);
+            pcrAndRobot.transform.position = new Vector3(3.6f, 0.92f, 3.2f);
+            pcrAndRobot.transform.rotation = Quaternion.Euler(0, 0f, 0);
+
+            // =======================================================================
+            // ZONE 3 (EAST WING): DRY-LAB MANUSCRIPT & PAPERGIT COMMAND OFFICE
+            // =======================================================================
+            var paperDesk = LabModelGenerator.CreateManuscriptCommandDesk(
+                _benchTopMaterial, _metalMaterial, _equipmentBodyMat, _cyanGlowMaterial, _paperGitMonitorTex, _holoDiagTex);
+            paperDesk.transform.position = new Vector3(8.6f, 0f, -1.0f);
+            paperDesk.transform.rotation = Quaternion.Euler(0, -90f, 0);
         }
 
         private void SetupCharacters()
@@ -294,8 +330,10 @@ namespace BioLab.Core
 
         private void SetupTabletUI()
         {
-            GameObject uiRoot = new GameObject("UI_ProtocolManager");
+            GameObject uiRoot = new GameObject("UI_LabOS_And_PaperGit_Managers");
+            uiRoot.AddComponent<ReagentWarehouseManager>();
             uiRoot.AddComponent<Protocols.ProtocolManager>();
+            uiRoot.AddComponent<PaperVersionControlManager>();
             uiRoot.AddComponent<DiegeticTabletUI>();
         }
 
@@ -308,6 +346,7 @@ namespace BioLab.Core
         {
             string[] args = System.Environment.GetCommandLineArgs();
             string screenshotPath = null;
+            string spawnZone = null;
             bool testLocomotion = false;
             float delay = 1.8f;
             bool quitAfter = false;
@@ -317,6 +356,10 @@ namespace BioLab.Core
                 if (args[i].Equals("-testLocomotion", System.StringComparison.OrdinalIgnoreCase))
                 {
                     testLocomotion = true;
+                }
+                else if (args[i].Equals("-spawnZone", System.StringComparison.OrdinalIgnoreCase) && i + 1 < args.Length)
+                {
+                    spawnZone = args[i + 1];
                 }
                 else if (args[i].Equals("-screenshot", System.StringComparison.OrdinalIgnoreCase) && i + 1 < args.Length)
                 {
@@ -330,6 +373,11 @@ namespace BioLab.Core
                 {
                     quitAfter = true;
                 }
+            }
+
+            if (!string.IsNullOrEmpty(spawnZone) && DiegeticTabletUI.Instance != null)
+            {
+                DiegeticTabletUI.Instance.TeleportPlayerToZone(spawnZone.ToUpperInvariant());
             }
 
             if (testLocomotion && _playerRoot != null)

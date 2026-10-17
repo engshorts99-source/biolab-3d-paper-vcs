@@ -12,9 +12,9 @@ namespace BioLab.Environment
     public class CleanroomBuilder : MonoBehaviour
     {
         [Header("Room Dimensions (Meters)")]
-        public float roomWidth = 16.0f;
-        public float roomLength = 20.0f;
-        public float roomHeight = 3.6f;
+        public float roomWidth = 24.0f;
+        public float roomLength = 22.0f;
+        public float roomHeight = 3.8f;
 
         [Header("Materials")]
         public Material floorMaterial;
@@ -34,8 +34,8 @@ namespace BioLab.Environment
         private void Start()
         {
             BuildHighContrastCleanroom();
+            BuildThreeZonePartitionsAndMarkers();
             BuildWorkbenchesAndProps();
-            BuildSciFiPedestalAndHoloConsoles(transform);
         }
 
         public void BuildHighContrastCleanroom()
@@ -82,7 +82,7 @@ namespace BioLab.Environment
             CreateRail(labRoot.transform, new Vector3(roomWidth * 0.5f - 0.05f, 0.95f, 0), new Vector3(0.04f, 0.06f, roomLength));
 
             // =========================================================================
-            // 4. Dark Ceiling Grid with Recessed HEPA Diffusers (FFU)
+            // 4. Dark Ceiling Grid with Recessed HEPA Diffusers (FFU) Across 3 Zones
             // =========================================================================
             GameObject ceiling = GameObject.CreatePrimitive(PrimitiveType.Cube);
             ceiling.name = "Ceiling_Structural_Slab";
@@ -91,12 +91,12 @@ namespace BioLab.Environment
             ceiling.transform.localScale = new Vector3(roomWidth, 0.2f, roomLength);
             if (baseboardMaterial != null) ceiling.GetComponent<Renderer>().material = baseboardMaterial;
 
-            // HEPA Fan Filter Units with Cleanroom 5000K Lighting
-            for (int x = -1; x <= 1; x++)
+            // HEPA Fan Filter Units with Cleanroom 5000K Lighting across X=(-2..2)
+            for (int x = -2; x <= 2; x++)
             {
                 for (int z = -2; z <= 2; z++)
                 {
-                    Vector3 ffuPos = new Vector3(x * 4.8f, roomHeight - 0.05f, z * 3.8f);
+                    Vector3 ffuPos = new Vector3(x * 4.6f, roomHeight - 0.05f, z * 4.0f);
 
                     // FFU Frame
                     GameObject ffuObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -109,12 +109,14 @@ namespace BioLab.Environment
                     // Diffused Daylight Luminaire
                     GameObject lightObj = new GameObject($"Luminaire_{x}_{z}");
                     lightObj.transform.SetParent(labRoot.transform, false);
-                    lightObj.transform.position = ffuPos - new Vector3(0, 0.2f, 0);
+                    lightObj.transform.position = ffuPos - new Vector3(0, 0.25f, 0);
                     Light lightComp = lightObj.AddComponent<Light>();
                     lightComp.type = LightType.Point;
-                    lightComp.range = 7.0f;
-                    lightComp.intensity = 1.1f;
-                    lightComp.color = new Color(0.92f, 0.96f, 1.0f);
+                    lightComp.range = 8.5f;
+                    lightComp.intensity = 1.05f;
+                    lightComp.color = (x < -1)
+                        ? new Color(0.88f, 1.0f, 0.95f)   // Zone 1 subtle cool-emerald tint
+                        : (x > 1 ? new Color(0.95f, 0.92f, 1.0f) : new Color(0.92f, 0.96f, 1.0f));
                 }
             }
 
@@ -123,6 +125,104 @@ namespace BioLab.Environment
             // =========================================================================
             CreateAirlockDoor(labRoot.transform, new Vector3(0, 1.25f, -roomLength * 0.5f + 0.1f));
         }
+
+        /// <summary>
+        /// Builds the architectural glass partitions, zone floor inlays, and glowing zone header beams
+        /// dividing the facility into:
+        ///   Zone 1 (West): Reagent Warehouse & Cryo Storage Vault
+        ///   Zone 2 (Center): Wet-Lab Protocol Execution Bay
+        ///   Zone 3 (East): Dry-Lab Manuscript & PaperGit Command Office
+        /// </summary>
+        public void BuildThreeZonePartitionsAndMarkers()
+        {
+            GameObject zonesRoot = new GameObject("Three_Zones_Architectural_Dividers");
+            zonesRoot.transform.SetParent(transform, false);
+
+            Material glassPartitionMat = new Material(Shader.Find("Diffuse"));
+            glassPartitionMat.color = new Color(0.35f, 0.72f, 0.92f, 0.35f);
+
+            Material emeraldMat = new Material(Shader.Find("Diffuse"));
+            emeraldMat.color = new Color(0.10f, 0.88f, 0.55f);
+
+            Material violetMat = new Material(Shader.Find("Diffuse"));
+            violetMat.color = new Color(0.68f, 0.35f, 0.98f);
+
+            Material dryLabFloorMat = new Material(Shader.Find("Diffuse"));
+            dryLabFloorMat.color = new Color(0.14f, 0.16f, 0.24f);
+
+            // --- ZONE 1 (WEST WING: X = -12 to -5.2) REAGENT WAREHOUSE & CRYO VAULT ---
+            // Emerald Zone Floor Boundary Line
+            GameObject z1Line = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            z1Line.name = "Zone1_Warehouse_Floor_Border";
+            z1Line.transform.SetParent(zonesRoot.transform, false);
+            z1Line.transform.position = new Vector3(-5.2f, 0.006f, 0f);
+            z1Line.transform.localScale = new Vector3(0.12f, 0.01f, 18.0f);
+            if (z1Line.GetComponent<Collider>()) Object.Destroy(z1Line.GetComponent<Collider>());
+            z1Line.GetComponent<Renderer>().material = emeraldMat;
+
+            // North & South Glass Partition Wings for Zone 1 (Leaving wide 6m center archway open)
+            CreateGlassPartitionSegment(zonesRoot.transform, new Vector3(-5.2f, 1.6f, 6.5f), new Vector3(0.08f, 3.2f, 6.0f), glassPartitionMat, emeraldMat, "Zone1_North_Glass_Wall");
+            CreateGlassPartitionSegment(zonesRoot.transform, new Vector3(-5.2f, 1.6f, -6.5f), new Vector3(0.08f, 3.2f, 6.0f), glassPartitionMat, emeraldMat, "Zone1_South_Glass_Wall");
+
+            // Overhead Archway Beam for Zone 1
+            GameObject z1Header = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            z1Header.name = "Zone1_Header_Arch";
+            z1Header.transform.SetParent(zonesRoot.transform, false);
+            z1Header.transform.position = new Vector3(-5.2f, 3.05f, 0f);
+            z1Header.transform.localScale = new Vector3(0.18f, 0.28f, 7.2f);
+            z1Header.GetComponent<Renderer>().material = emeraldMat;
+
+            // --- ZONE 3 (EAST WING: X = +5.2 to +12) DRY-LAB MANUSCRIPT & GIT OFFICE ---
+            // Executive Dry-Lab Floor Mat Inlay
+            GameObject z3Floor = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            z3Floor.name = "Zone3_DryLab_Office_Floor_Inlay";
+            z3Floor.transform.SetParent(zonesRoot.transform, false);
+            z3Floor.transform.position = new Vector3(8.5f, 0.004f, -1.0f);
+            z3Floor.transform.localScale = new Vector3(6.4f, 0.008f, 16.0f);
+            if (z3Floor.GetComponent<Collider>()) Object.Destroy(z3Floor.GetComponent<Collider>());
+            z3Floor.GetComponent<Renderer>().material = dryLabFloorMat;
+
+            // Violet Zone Floor Boundary Line
+            GameObject z3Line = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            z3Line.name = "Zone3_PaperGit_Floor_Border";
+            z3Line.transform.SetParent(zonesRoot.transform, false);
+            z3Line.transform.position = new Vector3(5.2f, 0.006f, 0f);
+            z3Line.transform.localScale = new Vector3(0.12f, 0.01f, 18.0f);
+            if (z3Line.GetComponent<Collider>()) Object.Destroy(z3Line.GetComponent<Collider>());
+            z3Line.GetComponent<Renderer>().material = violetMat;
+
+            // Acoustic Glass Partition Wings for Zone 3 Dry-Lab Office
+            CreateGlassPartitionSegment(zonesRoot.transform, new Vector3(5.2f, 1.6f, 6.5f), new Vector3(0.08f, 3.2f, 6.0f), glassPartitionMat, violetMat, "Zone3_North_Glass_Wall");
+            CreateGlassPartitionSegment(zonesRoot.transform, new Vector3(5.2f, 1.6f, -6.5f), new Vector3(0.08f, 3.2f, 6.0f), glassPartitionMat, violetMat, "Zone3_South_Glass_Wall");
+
+            // Overhead Archway Beam for Zone 3
+            GameObject z3Header = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            z3Header.name = "Zone3_Header_Arch";
+            z3Header.transform.SetParent(zonesRoot.transform, false);
+            z3Header.transform.position = new Vector3(5.2f, 3.05f, 0f);
+            z3Header.transform.localScale = new Vector3(0.18f, 0.28f, 7.2f);
+            z3Header.GetComponent<Renderer>().material = violetMat;
+        }
+
+        private void CreateGlassPartitionSegment(Transform parent, Vector3 pos, Vector3 scale, Material glassMat, Material trimMat, string name)
+        {
+            GameObject glass = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            glass.name = name;
+            glass.transform.SetParent(parent, false);
+            glass.transform.position = pos;
+            glass.transform.localScale = scale;
+            glass.GetComponent<Renderer>().material = glassMat;
+
+            // Glowing vertical edge pillar
+            GameObject pillar = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            pillar.name = name + "_Frame_Pillar";
+            pillar.transform.SetParent(parent, false);
+            float zEdge = pos.z > 0 ? (pos.z - scale.z * 0.5f) : (pos.z + scale.z * 0.5f);
+            pillar.transform.position = new Vector3(pos.x, pos.y, zEdge);
+            pillar.transform.localScale = new Vector3(0.14f, scale.y, 0.14f);
+            pillar.GetComponent<Renderer>().material = trimMat;
+        }
+
 
         private void CreateBaseboard(Transform parent, Vector3 pos, Vector3 scale, string name)
         {
@@ -188,11 +288,11 @@ namespace BioLab.Environment
             GameObject benchRoot = new GameObject("Workstations_And_Props");
             benchRoot.transform.SetParent(transform, false);
 
-            // West Bay Laboratory Workstation (Left Wall)
-            CreateBench(benchRoot.transform, new Vector3(-5.5f, 0, 2.0f), 6.0f);
+            // Zone 2 West Wet-Lab Workstation (Centrifuge & Sample Prep Bench)
+            CreateBench(benchRoot.transform, new Vector3(-3.6f, 0, 3.2f), 5.2f);
 
-            // East Bay Laboratory Workstation (Right Wall)
-            CreateBench(benchRoot.transform, new Vector3(5.5f, 0, 0f), 5.0f);
+            // Zone 2 East Wet-Lab Workstation (qPCR & Automated Liquid Handler Bench)
+            CreateBench(benchRoot.transform, new Vector3(3.6f, 0, 3.2f), 5.2f);
 
             // Heroic Sci-Fi Pedestal & Floating Holographic Bio-Terminals
             BuildSciFiPedestalAndHoloConsoles(benchRoot.transform);
